@@ -21,6 +21,47 @@
 
 #define BUFFER_SIZE 1024
 
+class Force : public AbstractSensor{
+
+    int range = 1000, count = 0;
+    float pcharge = 0, aux_force = 0, force_N = 0;
+
+    public:
+
+    void addData(const float &value){
+        aux_force += value;
+        if(count == 5)
+        {
+                pcharge = (aux_force/5) * range / 10;
+                if(pcharge < 0)
+                {
+                    force_N = pcharge * 10000 / range;
+                    qDebug()<< "Charge value:" << pcharge << "pC. Force value:"<< force_N<<"N";
+                }
+        }
+    }
+};
+
+class PressureSensor : public AbstractSensor{
+
+    int range = 1000, count = 0;
+    float pcharge = 0, aux_pressure = 0, pressure_bar = 0;
+
+    public:
+
+    void addData(const float &value){
+        aux_pressure += value;
+        if(count == 5)
+        {
+                pcharge = (aux_pressure/5) * range / 10;
+                if(pcharge < 0)
+                {
+                    pressure_bar = pcharge * 2000 / range;
+                    qDebug()<< "Charge value:" << pcharge << "pC. Pressure value:"<< pressure_bar<<"bar";
+                }
+        }
+    }
+};
 class Lvdt : public AbstractSensor{
 
         int count = 0;
@@ -87,6 +128,8 @@ class AD7608 : public AbstractSensorInterface{
 
     Lvdt _lvdt_1, _lvdt_2;
     LoadCell _loadcell_1;
+    PressureSensor _pressure_sensor_1;
+    Force _force_1;
 
     inline size_t getNumOfBytes();
     void FileSetup();
@@ -99,7 +142,7 @@ class AD7608 : public AbstractSensorInterface{
         ~AD7608();
         void getBuffers(uint8_t **, uint8_t **) override;
         size_t getNumBytesTransferred() override;
-        uint8_t getChipSelect() override {return 0;}
+        uint8_t getChipSelect() override {}
         void getNumOfSlotsPerChannel(uint8_t&) override {}
         const std::vector<std::tuple<float, float, float>> getStatistics(std::vector<std::string> &);
         void processDataReceived();        

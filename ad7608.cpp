@@ -6,6 +6,8 @@ AD7608::AD7608(const QString &dirUrl, const uint16_t &num):
 {
     _lvdt_1.setName("LVDT_1");
     _loadcell_1.setName("Cell_1");
+    _pressure_sensor_1.setName("Pressure_1");
+    _force_1.setName("Deformation1");
     n_ofBytes = getNumOfBytes();
 
     FileSetup();
@@ -111,6 +113,7 @@ void AD7608::processDataReceived(){
     }
     _lvdt_1.addData(ADC_channels[0]);
     _loadcell_1.addData(ADC_channels[1]);
+
 }
 
 const std::vector< std::tuple <float, float, float> > AD7608::getStatistics(std::vector<std::string> &outSensoresName){
